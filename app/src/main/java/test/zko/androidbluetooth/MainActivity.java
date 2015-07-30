@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mBtnOn;
     private Button mBtnOff;
     private Button mBtnScan;
-    private ArrayAdapter<String> mListViewAdapter;
+    private DevicesListAdapter mListViewAdapter;
     private BluetoothAdapter mBluetoothAdapter;
     private ListView mDevicesFoundListView;
     private BroadcastReceiver mBluetoothReceiver;
@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         mBtnOff     = (Button) findViewById(R.id.btn_turn_off);
         mBtnScan    = (Button) findViewById(R.id.btn_scan);
         mDevicesFoundListView = (ListView) findViewById(R.id.list_view);
-        mListViewAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1);
+        mListViewAdapter = new DevicesListAdapter(this,R.layout.device_list_item);
         mDevicesFoundListView.setAdapter(mListViewAdapter);
         setUpBroadcastReceiver();
         setUpButtons();
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 if(BluetoothDevice.ACTION_FOUND.equals(intent.getAction())){
                     BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                    mListViewAdapter.add(device.getName() + "\n" + device.getAddress());
+                    mListViewAdapter.add(device);
                     mListViewAdapter.notifyDataSetChanged();
                 }
             }
