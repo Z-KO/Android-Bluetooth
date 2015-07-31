@@ -16,6 +16,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.Set;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -41,8 +43,10 @@ public class MainActivity extends AppCompatActivity {
 
         mListViewAdapter = new DevicesListAdapter(this,R.layout.device_list_item);
         mDevicesFoundListView.setAdapter(mListViewAdapter);
+
         setUpBroadcastReceiver();
         setUpButtons();
+        getPairedDevices();
     }
 
     @Override
@@ -101,6 +105,17 @@ public class MainActivity extends AppCompatActivity {
                 mBluetoothAdapter.startDiscovery();
             }
         });
+    }
+
+    /**
+     * Adds paired devices to the listview
+     */
+    private void getPairedDevices() {
+        Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+        if (pairedDevices.size() > 0) {
+            mListViewAdapter.addAll(pairedDevices);
+            mListViewAdapter.notifyDataSetChanged();
+        }
     }
 
     private void setUpBroadcastReceiver() {
