@@ -16,27 +16,29 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button mBtnOn;
-    private Button mBtnOff;
-    private Button mBtnScan;
+    @Bind(R.id.btn_turn_on) Button mBtnOn;
+    @Bind(R.id.btn_turn_off) Button mBtnOff;
+    @Bind(R.id.btn_scan) Button mBtnScan;
+    @Bind(R.id.list_view) ListView mDevicesFoundListView;
     private DevicesListAdapter mListViewAdapter;
     private BluetoothAdapter mBluetoothAdapter;
-    private ListView mDevicesFoundListView;
     private BroadcastReceiver mBluetoothReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        mBtnOn      = (Button) findViewById(R.id.btn_turn_on);
-        mBtnOff     = (Button) findViewById(R.id.btn_turn_off);
-        mBtnScan    = (Button) findViewById(R.id.btn_scan);
-        mDevicesFoundListView = (ListView) findViewById(R.id.list_view);
+        ButterKnife.bind(this);
+
         mListViewAdapter = new DevicesListAdapter(this,R.layout.device_list_item);
         mDevicesFoundListView.setAdapter(mListViewAdapter);
         setUpBroadcastReceiver();
