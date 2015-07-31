@@ -3,4 +3,8 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
+    <!-- Status Strings -->
+    <string name="status_enabled">Bluetooth Enabled</string>
+    <string name="status_disabled">Bluetooth Disabled</string>
 </resources>

@@ -14,11 +14,14 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Set;
 
 import butterknife.Bind;
+import butterknife.BindString;
 import butterknife.ButterKnife;
 
 
@@ -27,10 +30,18 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.btn_turn_on) Button mBtnOn;
     @Bind(R.id.btn_turn_off) Button mBtnOff;
     @Bind(R.id.btn_scan) Button mBtnScan;
+    @Bind(R.id.main_status_scan_progressbar) ProgressBar mScanProgressbar;
+    @Bind(R.id.main_status_text) TextView mStatusText;
     @Bind(R.id.list_view) ListView mDevicesFoundListView;
+
+    @BindString(R.string.status_enabled) String ENABLED;
+    @BindString(R.string.status_disabled) String DISABLED;
+
     private DevicesListAdapter mListViewAdapter;
     private BluetoothAdapter mBluetoothAdapter;
     private BroadcastReceiver mBluetoothReceiver;
+
+    public static final int REQUEST_ENABLE_BT = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +51,14 @@ public class MainActivity extends AppCompatActivity {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         ButterKnife.bind(this);
+
+        if(mBluetoothAdapter.isEnabled()) {
+            mStatusText.setText(ENABLED);
+            mStatusText.setTextColor(getResources().getColor(R.color.black));
+        } else {
+            mStatusText.setText(DISABLED);
+            mStatusText.setTextColor(getResources().getColor(R.color.red));
+        }
 
         mListViewAdapter = new DevicesListAdapter(this,R.layout.device_list_item);
         mDevicesFoundListView.setAdapter(mListViewAdapter);
@@ -83,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                 if(mBluetoothAdapter.isEnabled()) {
                     Toast.makeText(getApplicationContext(),"Bluetooth is already on",Toast.LENGTH_SHORT).show();
                 } else {
-                    startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE),0);
+                    startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE),REQUEST_ENABLE_BT);
                     Toast.makeText(getApplicationContext(),"Turning on...",Toast.LENGTH_SHORT).show();
                 }
             }
@@ -93,18 +112,29 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mBluetoothAdapter.disable();
-                Toast.makeText(getApplicationContext(),"Bluetooth turned off",Toast.LENGTH_SHORT).show();
+                mStatusText.setText(DISABLED);
+                mStatusText.setTextColor(getResources().getColor(R.color.red));
             }
         });
 
         mBtnScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"Scanning...",Toast.LENGTH_SHORT).show();
+                mScanProgressbar.setVisibility(View.VISIBLE);
                 mListViewAdapter.clear();
                 mBluetoothAdapter.startDiscovery();
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_ENABLE_BT) {
+            if (resultCode == RESULT_OK) {
+                mStatusText.setText(ENABLED);
+                mStatusText.setTextColor(getResources().getColor(R.color.black));
+            }
+        }
     }
 
     /**
@@ -127,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
                     mListViewAdapter.add(device);
                     mListViewAdapter.notifyDataSetChanged();
                 }
+                mScanProgressbar.setVisibility(View.GONE);
             }
         };
         registerReceiver(mBluetoothReceiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
