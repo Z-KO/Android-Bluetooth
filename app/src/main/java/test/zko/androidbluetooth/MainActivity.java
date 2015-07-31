@@ -1,9 +1,11 @@
 package test.zko.androidbluetooth;
 
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -11,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -62,6 +65,14 @@ public class MainActivity extends AppCompatActivity {
 
         mListViewAdapter = new DevicesListAdapter(this,R.layout.device_list_item);
         mDevicesFoundListView.setAdapter(mListViewAdapter);
+
+        mDevicesFoundListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                BluetoothDevice device = (BluetoothDevice) view.getTag();
+                createAlertDialog(device);
+            }
+        });
 
         setUpBroadcastReceiver();
         setUpButtons();
@@ -146,6 +157,33 @@ public class MainActivity extends AppCompatActivity {
             mListViewAdapter.addAll(pairedDevices);
             mListViewAdapter.notifyDataSetChanged();
         }
+    }
+
+    /**
+     * Creates an alert dialog to check if the user wants to connect to the device or not
+     * @param bluetoothDevice the device to connect to
+     */
+    private void createAlertDialog(BluetoothDevice bluetoothDevice) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Connect to device")
+                .setMessage("Are you sure you want to connect to " + bluetoothDevice.getName() + " ?");
+
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Connect to device
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builder.create().show();
     }
 
     private void setUpBroadcastReceiver() {

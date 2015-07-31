@@ -22,6 +22,8 @@ public class DevicesListAdapter extends ArrayAdapter<BluetoothDevice> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.device_list_item,parent,false);
         }
 
+        convertView.setTag(device);
+
         TextView deviceNameTextView = (TextView) convertView.findViewById(R.id.device_name_text);
         TextView deviceAddressTextView = (TextView) convertView.findViewById(R.id.device_address_text);
 
