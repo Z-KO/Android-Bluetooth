@@ -26,6 +26,9 @@ import java.util.Set;
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
+import test.zko.androidbluetooth.events.ConnectEvent;
+import test.zko.androidbluetooth.jobs.ConnectJob;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -77,6 +80,18 @@ public class MainActivity extends AppCompatActivity {
         setUpBroadcastReceiver();
         setUpButtons();
         getPairedDevices();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
     }
 
     @Override
@@ -163,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
      * Creates an alert dialog to check if the user wants to connect to the device or not
      * @param bluetoothDevice the device to connect to
      */
-    private void createAlertDialog(BluetoothDevice bluetoothDevice) {
+    private void createAlertDialog(final BluetoothDevice bluetoothDevice) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle("Connect to device")
@@ -172,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // Connect to device
+                BluetoothApplication.getJobManager().addJobInBackground(new ConnectJob(bluetoothDevice));
             }
         });
 
@@ -199,5 +214,11 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         registerReceiver(mBluetoothReceiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
+    }
+
+    public void onEventMainThread(ConnectEvent event) {
+        if(event.success) {
+            mStatusText.setText("Connected to "+event.deviceName);
+        }
     }
 }
