@@ -55,8 +55,35 @@
             android:layout_toRightOf="@id/main_status_text"
             android:layout_below="@id/main_status_text_static"
             android:visibility="gone"/>
+        <Button
+            android:text="Disconnect"
+            android:id="@+id/btn_disconnect"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/main_status_text"
+            android:visibility="gone"/>
+        <Button
+            android:text="Send 1"
+            android:id="@+id/btn_send1"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/main_status_text"
+            android:layout_toRightOf="@id/btn_disconnect"
+            android:visibility="gone"/>
+        <Button
+            android:text="Send 0"
+            android:id="@+id/btn_send2"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/main_status_text"
+            android:layout_toRightOf="@id/btn_send1"
+            android:visibility="gone"/>
 
     </RelativeLayout>
+
 
 
 </LinearLayout>

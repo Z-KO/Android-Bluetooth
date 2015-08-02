@@ -28,6 +28,7 @@ import butterknife.BindString;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import test.zko.androidbluetooth.events.ConnectEvent;
+import test.zko.androidbluetooth.events.SendDataEvent;
 import test.zko.androidbluetooth.jobs.ConnectJob;
 
 
@@ -36,6 +37,9 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.btn_turn_on) Button mBtnOn;
     @Bind(R.id.btn_turn_off) Button mBtnOff;
     @Bind(R.id.btn_scan) Button mBtnScan;
+    @Bind(R.id.btn_disconnect) Button mBtnDisconnect;
+    @Bind(R.id.btn_send1) Button mBtnSend1;
+    @Bind(R.id.btn_send2) Button mBtnsend2;
     @Bind(R.id.main_status_scan_progressbar) ProgressBar mScanProgressbar;
     @Bind(R.id.main_status_text) TextView mStatusText;
     @Bind(R.id.list_view) ListView mDevicesFoundListView;
@@ -151,6 +155,27 @@ public class MainActivity extends AppCompatActivity {
                 mBluetoothAdapter.startDiscovery();
             }
         });
+
+        mBtnDisconnect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EventBus.getDefault().post(new SendDataEvent(null,true));
+            }
+        });
+
+        mBtnSend1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EventBus.getDefault().post(new SendDataEvent("1".getBytes(),false));
+            }
+        });
+
+        mBtnsend2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EventBus.getDefault().post(new SendDataEvent("0".getBytes(),false));
+            }
+        });
     }
 
     @Override
@@ -219,6 +244,15 @@ public class MainActivity extends AppCompatActivity {
     public void onEventMainThread(ConnectEvent event) {
         if(event.success) {
             mStatusText.setText("Connected to "+event.deviceName);
+            mStatusText.setTextColor(getResources().getColor(R.color.green));
+            mBtnDisconnect.setVisibility(View.VISIBLE);
+            mBtnSend1.setVisibility(View.VISIBLE);
+            mBtnsend2.setVisibility(View.VISIBLE);
+        } else {
+            mStatusText.setText("Disconnected");
+            mBtnDisconnect.setVisibility(View.GONE);
+            mBtnSend1.setVisibility(View.GONE);
+            mBtnsend2.setVisibility(View.GONE);
         }
     }
 }

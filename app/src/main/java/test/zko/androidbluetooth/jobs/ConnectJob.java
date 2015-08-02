@@ -4,14 +4,18 @@ package test.zko.androidbluetooth.jobs;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.os.ParcelUuid;
+import android.util.Log;
 
 import com.path.android.jobqueue.Job;
 import com.path.android.jobqueue.Params;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.UUID;
 
 import de.greenrobot.event.EventBus;
+import test.zko.androidbluetooth.BluetoothApplication;
 import test.zko.androidbluetooth.events.ConnectEvent;
 
 public class ConnectJob extends Job {
@@ -32,14 +36,20 @@ public class ConnectJob extends Job {
         BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
 
         try {
-            Method m = mDevice.getClass().getMethod("createRfcommSocket", new Class[] {int.class});
-            mSocket = (BluetoothSocket) m.invoke(mDevice,1);
+            ParcelUuid[] deviceID = mDevice.getUuids();
+            UUID uuid = deviceID[0].getUuid();
+
+            mSocket = mDevice.createRfcommSocketToServiceRecord(uuid);
+            Log.d("UUID",uuid.toString());
             mSocket.connect();
         } catch (IOException connectionException){
             mSocket.close();
             throw connectionException;
         }
+
         EventBus.getDefault().post(new ConnectEvent(true,mDevice.getName()));
+
+        BluetoothApplication.getJobManager().addJobInBackground(new HandleConnectionJob(mSocket));
     }
 
     @Override
