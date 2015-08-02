@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.btn_disconnect) Button mBtnDisconnect;
     @Bind(R.id.btn_send1) Button mBtnSend1;
     @Bind(R.id.btn_send2) Button mBtnsend2;
+    @Bind(R.id.seekbar) SeekBar mSeekBar;
+    @Bind(R.id.seekbar_value_text) TextView mSeekbarValueText;
     @Bind(R.id.main_status_scan_progressbar) ProgressBar mScanProgressbar;
     @Bind(R.id.main_status_text) TextView mStatusText;
     @Bind(R.id.list_view) ListView mDevicesFoundListView;
@@ -69,6 +72,20 @@ public class MainActivity extends AppCompatActivity {
             mStatusText.setText(DISABLED);
             mStatusText.setTextColor(getResources().getColor(R.color.red));
         }
+
+        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                EventBus.getDefault().post(new SendDataEvent(String.valueOf(progress).getBytes(),false));
+                mSeekbarValueText.setText(String.valueOf(progress));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
 
         mListViewAdapter = new DevicesListAdapter(this,R.layout.device_list_item);
         mDevicesFoundListView.setAdapter(mListViewAdapter);
@@ -248,11 +265,15 @@ public class MainActivity extends AppCompatActivity {
             mBtnDisconnect.setVisibility(View.VISIBLE);
             mBtnSend1.setVisibility(View.VISIBLE);
             mBtnsend2.setVisibility(View.VISIBLE);
+            mSeekBar.setVisibility(View.VISIBLE);
+            mSeekbarValueText.setVisibility(View.VISIBLE);
         } else {
             mStatusText.setText("Disconnected");
             mBtnDisconnect.setVisibility(View.GONE);
             mBtnSend1.setVisibility(View.GONE);
             mBtnsend2.setVisibility(View.GONE);
+            mSeekBar.setVisibility(View.GONE);
+            mSeekbarValueText.setVisibility(View.GONE);
         }
     }
 }

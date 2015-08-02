@@ -81,6 +81,23 @@
             android:layout_below="@id/main_status_text"
             android:layout_toRightOf="@id/btn_send1"
             android:visibility="gone"/>
+        <SeekBar
+            android:paddingTop="10dp"
+            android:id="@+id/seekbar"
+            android:layout_width="320dp"
+            android:max="256"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btn_disconnect"
+            android:visibility="gone"/>
+        <TextView
+            android:text="0"
+            android:id="@+id/seekbar_value_text"
+            android:paddingTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/seekbar"
+            android:layout_alignTop="@id/seekbar"
+            android:visibility="gone"/>
 
     </RelativeLayout>
 
