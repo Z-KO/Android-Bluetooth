@@ -22,6 +22,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.nio.ByteBuffer;
 import java.util.Set;
 
 import butterknife.Bind;
@@ -76,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                EventBus.getDefault().post(new SendDataEvent(String.valueOf(progress).getBytes(),false));
+                EventBus.getDefault().post(new SendDataEvent(new byte[]{(byte)progress},false));
                 mSeekbarValueText.setText(String.valueOf(progress));
             }
 
