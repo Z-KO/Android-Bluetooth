@@ -8,32 +8,37 @@
         android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-    <Button
-        android:id="@+id/btn_turn_on"
-        android:text="On"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <Button
-        android:id="@+id/btn_turn_off"
-        android:text="Off"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <Button
-        android:id="@+id/btn_scan"
-        android:text="Scan"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/btn_turn_on"
+            android:text="On"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/btn_turn_off"
+            android:text="Off"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/btn_scan"
+            android:text="Scan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:text="Clear Log"
+            android:id="@+id/btn_clear_log"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </LinearLayout>
+
     <ListView
         android:id="@+id/list_view"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:paddingBottom="10dp"/>
+        android:layout_height="150dp"
+        android:paddingBottom="5dp"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
         <TextView
             android:text="STATUS"
             android:padding="10dp"
@@ -63,24 +68,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/main_status_text"
             android:visibility="gone"/>
-        <Button
-            android:text="Send 1"
-            android:id="@+id/btn_send1"
-            android:padding="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/main_status_text"
-            android:layout_toRightOf="@id/btn_disconnect"
-            android:visibility="gone"/>
-        <Button
-            android:text="Send 0"
-            android:id="@+id/btn_send2"
-            android:padding="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/main_status_text"
-            android:layout_toRightOf="@id/btn_send1"
-            android:visibility="gone"/>
         <SeekBar
             android:paddingTop="10dp"
             android:id="@+id/seekbar"
@@ -98,10 +85,18 @@
             android:layout_toRightOf="@id/seekbar"
             android:layout_alignTop="@id/seekbar"
             android:visibility="gone"/>
-
     </RelativeLayout>
 
-
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent">
+        <TextView
+            android:id="@+id/log_text"
+            android:gravity="bottom"
+            android:scrollbars="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent" />
+    </ScrollView>
 
 </LinearLayout>
 

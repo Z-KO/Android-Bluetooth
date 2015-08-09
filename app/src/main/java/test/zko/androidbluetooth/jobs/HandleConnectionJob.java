@@ -10,9 +10,11 @@ import com.path.android.jobqueue.Params;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 
 import de.greenrobot.event.EventBus;
 import test.zko.androidbluetooth.events.ConnectEvent;
+import test.zko.androidbluetooth.events.LogEvent;
 import test.zko.androidbluetooth.events.SendDataEvent;
 
 public class HandleConnectionJob extends Job {
@@ -28,11 +30,12 @@ public class HandleConnectionJob extends Job {
     }
 
     @Override
-    public void onAdded() {}
+    public void onAdded() {
+        EventBus.getDefault().post(new LogEvent("Handling connection"));
+    }
 
     @Override
     public void onRun() throws Throwable {
-        Log.d("HANDLE", "Handling connection");
         try {
             mInputStream = mSocket.getInputStream();
             mOutputStream = mSocket.getOutputStream();
@@ -70,8 +73,8 @@ public class HandleConnectionJob extends Job {
             }
         } else {
             try {
-                Log.d("Message","Sending");
                 mOutputStream.write(event.data);
+                EventBus.getDefault().post(new LogEvent("SENDING: "+ Arrays.toString(event.data)));
             } catch (IOException e) {}
         }
 

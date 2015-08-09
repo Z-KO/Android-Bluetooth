@@ -12,11 +12,13 @@ import com.path.android.jobqueue.Params;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.Calendar;
 import java.util.UUID;
 
 import de.greenrobot.event.EventBus;
 import test.zko.androidbluetooth.BluetoothApplication;
 import test.zko.androidbluetooth.events.ConnectEvent;
+import test.zko.androidbluetooth.events.LogEvent;
 
 public class ConnectJob extends Job {
 
@@ -29,7 +31,9 @@ public class ConnectJob extends Job {
     }
 
     @Override
-    public void onAdded() {}
+    public void onAdded() {
+        EventBus.getDefault().post(new LogEvent("Connecting to " + mDevice.getName()));
+    }
 
     @Override
     public void onRun() throws Throwable {
@@ -48,6 +52,7 @@ public class ConnectJob extends Job {
         }
 
         EventBus.getDefault().post(new ConnectEvent(true,mDevice.getName()));
+        EventBus.getDefault().post(new LogEvent("Connected to " + mDevice.getName()));
 
         BluetoothApplication.getJobManager().addJobInBackground(new HandleConnectionJob(mSocket));
     }

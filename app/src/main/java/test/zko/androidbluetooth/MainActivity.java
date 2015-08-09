@@ -30,6 +30,7 @@ import butterknife.BindString;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import test.zko.androidbluetooth.events.ConnectEvent;
+import test.zko.androidbluetooth.events.LogEvent;
 import test.zko.androidbluetooth.events.SendDataEvent;
 import test.zko.androidbluetooth.jobs.ConnectJob;
 
@@ -40,13 +41,14 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.btn_turn_off) Button mBtnOff;
     @Bind(R.id.btn_scan) Button mBtnScan;
     @Bind(R.id.btn_disconnect) Button mBtnDisconnect;
-    @Bind(R.id.btn_send1) Button mBtnSend1;
-    @Bind(R.id.btn_send2) Button mBtnsend2;
+    @Bind(R.id.btn_clear_log) Button mBtnClearLog;
     @Bind(R.id.seekbar) SeekBar mSeekBar;
     @Bind(R.id.seekbar_value_text) TextView mSeekbarValueText;
     @Bind(R.id.main_status_scan_progressbar) ProgressBar mScanProgressbar;
     @Bind(R.id.main_status_text) TextView mStatusText;
+    @Bind(R.id.log_text) TextView mLogText;
     @Bind(R.id.list_view) ListView mDevicesFoundListView;
+
 
     @BindString(R.string.status_enabled) String ENABLED;
     @BindString(R.string.status_disabled) String DISABLED;
@@ -177,21 +179,14 @@ public class MainActivity extends AppCompatActivity {
         mBtnDisconnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EventBus.getDefault().post(new SendDataEvent(null,true));
+                EventBus.getDefault().post(new SendDataEvent(null, true));
             }
         });
 
-        mBtnSend1.setOnClickListener(new View.OnClickListener() {
+        mBtnClearLog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EventBus.getDefault().post(new SendDataEvent("1".getBytes(),false));
-            }
-        });
-
-        mBtnsend2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EventBus.getDefault().post(new SendDataEvent("0".getBytes(),false));
+                mLogText.setText("");
             }
         });
     }
@@ -264,17 +259,17 @@ public class MainActivity extends AppCompatActivity {
             mStatusText.setText("Connected to "+event.deviceName);
             mStatusText.setTextColor(getResources().getColor(R.color.green));
             mBtnDisconnect.setVisibility(View.VISIBLE);
-            mBtnSend1.setVisibility(View.VISIBLE);
-            mBtnsend2.setVisibility(View.VISIBLE);
             mSeekBar.setVisibility(View.VISIBLE);
             mSeekbarValueText.setVisibility(View.VISIBLE);
         } else {
             mStatusText.setText("Disconnected");
             mBtnDisconnect.setVisibility(View.GONE);
-            mBtnSend1.setVisibility(View.GONE);
-            mBtnsend2.setVisibility(View.GONE);
             mSeekBar.setVisibility(View.GONE);
             mSeekbarValueText.setVisibility(View.GONE);
         }
+    }
+
+    public void onEventMainThread(LogEvent event) {
+        mLogText.append(event.message+"\n");
     }
 }
