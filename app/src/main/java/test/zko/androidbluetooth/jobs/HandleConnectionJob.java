@@ -47,6 +47,9 @@ public class HandleConnectionJob extends Job {
         while(true) {
             try {
                 bytes = mInputStream.read(buffer);
+                if(bytes > 0) {
+                    EventBus.getDefault().post(new LogEvent("RECEIVED: "+Arrays.toString(Arrays.copyOf(buffer,bytes))));
+                }
             } catch (IOException exception) {
                 break;
             }

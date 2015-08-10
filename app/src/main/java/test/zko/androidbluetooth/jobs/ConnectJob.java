@@ -48,6 +48,7 @@ public class ConnectJob extends Job {
             mSocket.connect();
         } catch (IOException connectionException){
             mSocket.close();
+            EventBus.getDefault().post(new LogEvent("ERROR: "+connectionException.getMessage()));
             throw connectionException;
         }
 

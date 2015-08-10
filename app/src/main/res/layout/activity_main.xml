@@ -68,11 +68,18 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/main_status_text"
             android:visibility="gone"/>
+        <ToggleButton
+            android:id="@+id/toggle_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/btn_disconnect"
+            android:layout_below="@id/main_status_text"
+            android:visibility="gone"/>
         <SeekBar
             android:paddingTop="10dp"
             android:id="@+id/seekbar"
             android:layout_width="320dp"
-            android:max="256"
+            android:max="255"
             android:layout_height="wrap_content"
             android:layout_below="@id/btn_disconnect"
             android:visibility="gone"/>
@@ -88,14 +95,17 @@
     </RelativeLayout>
 
     <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent">
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:gravity="bottom"
+        android:scrollbars="vertical"
+        android:paddingLeft="10dp"
+        android:paddingBottom="10dp">
         <TextView
             android:id="@+id/log_text"
-            android:gravity="bottom"
-            android:scrollbars="vertical"
             android:layout_width="match_parent"
-            android:layout_height="fill_parent" />
+            android:layout_height="match_parent" />
     </ScrollView>
 
 </LinearLayout>

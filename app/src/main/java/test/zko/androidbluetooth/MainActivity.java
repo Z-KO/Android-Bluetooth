@@ -16,11 +16,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.nio.ByteBuffer;
 import java.util.Set;
@@ -42,13 +45,14 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.btn_scan) Button mBtnScan;
     @Bind(R.id.btn_disconnect) Button mBtnDisconnect;
     @Bind(R.id.btn_clear_log) Button mBtnClearLog;
+    @Bind(R.id.toggle_btn) ToggleButton mToggleBtn;
     @Bind(R.id.seekbar) SeekBar mSeekBar;
     @Bind(R.id.seekbar_value_text) TextView mSeekbarValueText;
     @Bind(R.id.main_status_scan_progressbar) ProgressBar mScanProgressbar;
     @Bind(R.id.main_status_text) TextView mStatusText;
     @Bind(R.id.log_text) TextView mLogText;
     @Bind(R.id.list_view) ListView mDevicesFoundListView;
-
+    @Bind(R.id.scrollView) ScrollView mScrollView;
 
     @BindString(R.string.status_enabled) String ENABLED;
     @BindString(R.string.status_disabled) String DISABLED;
@@ -58,6 +62,10 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver mBluetoothReceiver;
 
     public static final int REQUEST_ENABLE_BT = 0;
+
+    public static final byte SEND_SIGNAL = 1;
+    public static final byte TOGGLE_ID = 2;
+    public static final byte SEEKBAR_ID = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                EventBus.getDefault().post(new SendDataEvent(new byte[]{(byte)progress},false));
+                EventBus.getDefault().post(new SendDataEvent(new byte[]{SEEKBAR_ID, (byte)progress},false));
                 mSeekbarValueText.setText(String.valueOf(progress));
             }
 
@@ -189,6 +197,17 @@ public class MainActivity extends AppCompatActivity {
                 mLogText.setText("");
             }
         });
+
+        mToggleBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked) {
+                    EventBus.getDefault().post(new SendDataEvent(new byte[] {TOGGLE_ID, (byte)1}, false));
+                } else {
+                    EventBus.getDefault().post(new SendDataEvent(new byte[] {TOGGLE_ID, (byte)0}, false));
+                }
+            }
+        });
     }
 
     @Override
@@ -256,20 +275,23 @@ public class MainActivity extends AppCompatActivity {
 
     public void onEventMainThread(ConnectEvent event) {
         if(event.success) {
-            mStatusText.setText("Connected to "+event.deviceName);
+            mStatusText.setText("Connected to " + event.deviceName);
             mStatusText.setTextColor(getResources().getColor(R.color.green));
             mBtnDisconnect.setVisibility(View.VISIBLE);
             mSeekBar.setVisibility(View.VISIBLE);
             mSeekbarValueText.setVisibility(View.VISIBLE);
+            mToggleBtn.setVisibility(View.VISIBLE);
         } else {
             mStatusText.setText("Disconnected");
             mBtnDisconnect.setVisibility(View.GONE);
             mSeekBar.setVisibility(View.GONE);
             mSeekbarValueText.setVisibility(View.GONE);
+            mToggleBtn.setVisibility(View.GONE);
         }
     }
 
     public void onEventMainThread(LogEvent event) {
         mLogText.append(event.message+"\n");
+        mScrollView.fullScroll(View.FOCUS_DOWN);
     }
 }
