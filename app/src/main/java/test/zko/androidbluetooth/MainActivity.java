@@ -14,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ListView;
@@ -25,7 +24,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import java.nio.ByteBuffer;
 import java.util.Set;
 
 import butterknife.Bind;
@@ -35,6 +33,7 @@ import de.greenrobot.event.EventBus;
 import test.zko.androidbluetooth.events.ConnectEvent;
 import test.zko.androidbluetooth.events.LogEvent;
 import test.zko.androidbluetooth.events.SendDataEvent;
+import test.zko.androidbluetooth.events.UpdateDeviceEvent;
 import test.zko.androidbluetooth.jobs.ConnectJob;
 
 
@@ -293,5 +292,22 @@ public class MainActivity extends AppCompatActivity {
     public void onEventMainThread(LogEvent event) {
         mLogText.append(event.message+"\n");
         mScrollView.fullScroll(View.FOCUS_DOWN);
+    }
+
+    public void onEventMainThread(UpdateDeviceEvent event) {
+        switch (event.deviceID) {
+            case TOGGLE_ID:
+                mLogText.append("Updating Toggle Button \n");
+                if(event.deviceValue == 0) {
+                    mToggleBtn.setChecked(false);
+                } else {
+                    mToggleBtn.setChecked(true);
+                }
+                break;
+            case SEEKBAR_ID:
+                mLogText.append("Updating Seekbar \n");
+                mSeekBar.setProgress(event.deviceValue);
+                break;
+        }
     }
 }

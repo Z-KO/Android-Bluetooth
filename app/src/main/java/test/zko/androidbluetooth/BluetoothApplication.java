@@ -41,7 +41,7 @@ public class BluetoothApplication extends Application {
                         Log.e(TAG + " ERROR", String.format(text, args));
                     }
                 })
-                .minConsumerCount(1)
+                .minConsumerCount(0)
                 .maxConsumerCount(5)
                 .loadFactor(3)
                 .consumerKeepAlive(120)
