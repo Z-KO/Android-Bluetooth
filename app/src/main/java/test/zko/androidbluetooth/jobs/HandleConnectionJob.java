@@ -12,6 +12,7 @@ import java.io.OutputStream;
 import java.util.Arrays;
 
 import de.greenrobot.event.EventBus;
+import test.zko.androidbluetooth.Utility;
 import test.zko.androidbluetooth.events.ConnectEvent;
 import test.zko.androidbluetooth.events.LogEvent;
 import test.zko.androidbluetooth.events.SendDataEvent;
@@ -52,13 +53,12 @@ public class HandleConnectionJob extends Job {
         EventBus.getDefault().post(new SendDataEvent(new byte[]{1},false));
 
         while(true) {
-            //Thread.sleep(1,0);
             try {
                 bytes1 = mInputStream.read();
                 Thread.sleep(1,0);
                 bytes2 = mInputStream.read();
                 byte[] data = new byte[]{(byte)bytes1,(byte)bytes2};
-                EventBus.getDefault().post(new LogEvent("RECEIVED: " + Arrays.toString(data)));
+                EventBus.getDefault().post(new LogEvent("RECEIVED: " + "["+bytes1+","+ Utility.convertByte((byte) bytes2)+"]"));
                 handleData(data,2);
             } catch (IOException exception) {
                 EventBus.getDefault().post(new LogEvent("ERROR: "+exception.getMessage()));
@@ -99,7 +99,11 @@ public class HandleConnectionJob extends Job {
         } else {
             try {
                 mOutputStream.write(event.data);
-                EventBus.getDefault().post(new LogEvent("SENDING: "+ Arrays.toString(event.data)));
+                if(event.data.length >= 2) {
+                    EventBus.getDefault().post(new LogEvent("SENDING: ["+event.data[0]+","+ Utility.convertByte(event.data[1])+"]"));
+                } else {
+                    EventBus.getDefault().post(new LogEvent("SENDING: "+ Arrays.toString(event.data)));
+                }
             } catch (IOException e) {
                 EventBus.getDefault().post(new LogEvent("ERROR: "+e.getMessage()));
             }

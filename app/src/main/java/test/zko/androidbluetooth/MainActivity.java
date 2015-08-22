@@ -100,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
         mListViewAdapter = new DevicesListAdapter(this,R.layout.device_list_item);
         mDevicesFoundListView.setAdapter(mListViewAdapter);
 
+
         mDevicesFoundListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -282,6 +283,7 @@ public class MainActivity extends AppCompatActivity {
             mToggleBtn.setVisibility(View.VISIBLE);
         } else {
             mStatusText.setText("Disconnected");
+            mStatusText.setTextColor(getResources().getColor(R.color.black));
             mBtnDisconnect.setVisibility(View.GONE);
             mSeekBar.setVisibility(View.GONE);
             mSeekbarValueText.setVisibility(View.GONE);
@@ -306,8 +308,10 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case SEEKBAR_ID:
                 mLogText.append("Updating Seekbar \n");
-                mSeekBar.setProgress(event.deviceValue);
+                mSeekBar.setProgress(Utility.convertByte(event.deviceValue));
                 break;
         }
     }
+
+
 }
